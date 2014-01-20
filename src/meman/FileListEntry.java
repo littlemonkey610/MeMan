@@ -13,6 +13,7 @@ import java.io.File;
 import java.nio.file.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
 
 public class FileListEntry {
 
@@ -20,14 +21,23 @@ public class FileListEntry {
     char mediaType; //T = tv show, M = movie
     String extension; //mp4, mov etc...
     Path filePath; //path to file on disk
-    double timeImported; //time imported into library in seconds
+    Date timeImported; //time imported into library in seconds
     int fileSize; //size of file in megabytes
     int fileDuration; //length of file in mins
 
     public FileListEntry(Path newFilePath) { //constructor
         filePath = newFilePath;
         setTypeFromPath();
-        timeImported = System.currentTimeMillis();
+        timeImported = new Date();
+        setFileSize();
+        setFileDuration();
+        setName(newFilePath);
+    }
+    
+    public FileListEntry(Path newFilePath, Date date) { //constructor
+        filePath = newFilePath;
+        setTypeFromPath();
+        timeImported = date;
         setFileSize();
         setFileDuration();
         setName(newFilePath);
@@ -65,14 +75,14 @@ public class FileListEntry {
     }
 
     public String getExtension() {
-        return extension;
+        return name.substring(name.lastIndexOf('.') + 1);
     }
 
     public Path getFilePath() {
         return filePath;
     }
 
-    public double getImportTime() {
+    public Date getImportTime() {
         return timeImported;
     }
 

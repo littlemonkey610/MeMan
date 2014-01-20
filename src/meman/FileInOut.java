@@ -12,6 +12,10 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.*;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 /**
  *
@@ -36,7 +40,7 @@ public class FileInOut {
             for (int i = 0; i < numMovies; i++) {
                 String name = mediaFiles.get(i).getName();
                 Path path = mediaFiles.get(i).getFilePath();
-                double importTime = mediaFiles.get(i).getImportTime();
+                Date importTime = mediaFiles.get(i).getImportTime();
                 int size = mediaFiles.get(i).getFileSize();
 
                 String line = name + "\t" + path + "\t"
@@ -56,24 +60,40 @@ public class FileInOut {
         FileList files = new FileList();
         int counter = 0;
         long totalSize = 0;
+
         try {
-        BufferedReader readbuffer = new BufferedReader(new FileReader("movies.txt"));
-        
-         String strRead;
-        while ((strRead = readbuffer.readLine()) != null) {
-            String[] splitArray = strRead.split("\t");
-            files.importSingle(Paths.get(splitArray[1]));
-            totalSize += Double.parseDouble((splitArray[2]));
-            counter ++;
+            File f = new File("movies.txt");
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        } catch (IOException e){
-             e.printStackTrace();
+
+        try {
+            BufferedReader readbuffer = new BufferedReader(new FileReader("movies.txt"));
+
+            String strRead;
+            while ((strRead = readbuffer.readLine()) != null) {
+                String[] splitArray = strRead.split("\t");
+                Date tempDate = new Date();
+                
+                try {
+                DateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+                tempDate = (Date)formatter.parse(splitArray[2]);
+                } catch (ParseException e){
+                }
+
+                files.importSingle(Paths.get(splitArray[1]), tempDate);
+                totalSize += Double.parseDouble((splitArray[3]));
+                counter++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         MeMan.setNumMovies(String.valueOf(counter));
-        MeMan.setTotalSize(totalSize);
-        
-        return files;
-        }
-       
-    }
+        MeMan.setTotalSize(totalSize/1024);
 
+        return files;
+    }
+}
