@@ -254,14 +254,14 @@ public class Main extends javax.swing.JFrame {
     private void searchTextBoxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextBoxKeyReleased
         files = Search.searchText(searchTextBox.getText());
 
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); //clear table for new results
         if (model.getRowCount() > 0) {
             for (int i = model.getRowCount() - 1; i > -1; i--) {
                 model.removeRow(i);
             }
         }
 
-        for (int i = 0; i < files.size(); i++) {
+        for (int i = 0; i < files.size(); i++) { //populate table with search results
             model.addRow(new Object[]{files.get(i).getName(),
                         files.get(i).getFileSize() + "MB",
                         files.get(i).getExtension(),

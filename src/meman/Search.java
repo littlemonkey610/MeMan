@@ -26,7 +26,7 @@ public class Search {
         index = files.getList();
         for (int i = 0; i < numMovies; i++) {
             String tempName = index.get(i).getName().toLowerCase();
-            if (tempName.contains(phrase.toLowerCase()) && phrase.length() >= 1) {
+            if (tempName.contains(phrase.toLowerCase())) {
                 results.add(index.get(i));
             }
         }
