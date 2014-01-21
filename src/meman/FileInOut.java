@@ -92,7 +92,7 @@ public class FileInOut {
             e.printStackTrace();
         }
         MeMan.setNumMovies(String.valueOf(counter));
-        MeMan.setTotalSize(totalSize/1024);
+        files.setLibrarySize(totalSize/1024);
 
         return files;
     }
