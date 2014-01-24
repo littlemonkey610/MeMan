@@ -39,10 +39,6 @@ public class MeMan {
         gui.setProgressCurrent(current);
     }
 
-    public static void setNumMoviesDisplayed(String newText) {
-        gui.setNumMoviesDisplayed(newText);
-    }
-
     public static void setNumMovies(String newText) {
         gui.setNumMovies(newText);
     }

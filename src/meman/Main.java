@@ -240,7 +240,6 @@ public class Main extends javax.swing.JFrame {
                 FileInOut.WriteFileList(files);
                 movieSearchStatusLab.setText("Updating Index");
                 Search.updateIndex();
-                totalSizeLab.setText(String.valueOf(files.getLibrarySize()));
                 movieSearchStatusLab.setText("Done");
             }
         }.start();
@@ -279,6 +278,7 @@ public class Main extends javax.swing.JFrame {
             try {
                 Desktop.getDesktop().open(new File(files.get(jTable1.getSelectedRow()).getFilePath().toString()));
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
@@ -378,7 +378,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void setTotalSize(long newNum) {
-        totalSizeLab.setText(String.valueOf(newNum)
+        totalSizeLab.setText(String.valueOf(newNum/1073741824)
                 + "GB");
     }
 }

@@ -59,7 +59,6 @@ public class FileInOut {
     public static FileList readFileList() {
         FileList files = new FileList();
         int counter = 0;
-        long totalSize = 0;
 
         try {
             File f = new File("movies.txt");
@@ -85,14 +84,12 @@ public class FileInOut {
                 }
 
                 files.importSingle(Paths.get(splitArray[1]), tempDate);
-                totalSize += Double.parseDouble((splitArray[3]));
                 counter++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         MeMan.setNumMovies(String.valueOf(counter));
-        files.setLibrarySize(totalSize/1024);
 
         return files;
     }

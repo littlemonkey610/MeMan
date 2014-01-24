@@ -16,6 +16,8 @@ public class Search {
 
     public static void updateIndex() {
         files = FileInOut.readFileList();
+        MeMan.setNumMovies(String.valueOf(files.getNumMovies()));
+        MeMan.setTotalSize(files.getLibrarySize());
     }
 
     public static ArrayList<FileListEntry> searchText(String phrase) {

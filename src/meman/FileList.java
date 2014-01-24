@@ -12,19 +12,17 @@ import java.io.File;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.io.IOException;
 
 public class FileList {
+
     private ArrayList<FileListEntry> exsistingFiles;
     private int numMovies;
     private ArrayList<FileListEntry> mediaFiles = new ArrayList();
     private int counter = 0;
     private long librarySize = 0;
-    
-    public void setLibrarySize(long size){
-        librarySize = size;
-    }
-    
-    public long getLibrarySize(){
+
+    public long getLibrarySize() {
         return librarySize;
     }
 
@@ -43,20 +41,32 @@ public class FileList {
     public void importSingle(Path p, Date d) {
         mediaFiles.add(new FileListEntry(p, d));
         numMovies++;
+        File file = new File(p.toString());
+        librarySize += file.length();
     }
 
     private void BuildFileList(Path[] paths) {
-        int counter = 0;
+        int movieCounter = 0;
+        long size = 0;
+        
+        System.out.println(paths.length);
+        
         for (Path p : paths) {
             FileListEntry tempFile = checkIfExisits(p.toString());
-            if(tempFile != null){
+            if (tempFile != null) {
                 mediaFiles.add(tempFile);
-            } else{
-            mediaFiles.add(new FileListEntry(p));
+                File file = new File(p.toString());
+                size += file.length();
+                movieCounter++;
+            } else {
+                mediaFiles.add(new FileListEntry(p));
+                File file = new File(p.toString());
+                size += file.length();
+                movieCounter++;
             }
-            counter++;
+            numMovies = movieCounter;
+            librarySize = size;
         }
-        numMovies = counter;
     }
 
     public static void printFileList(FileList f) {
@@ -83,11 +93,11 @@ public class FileList {
         File[] listOfFileObjects = file.listFiles();
 
         for (File f : listOfFileObjects) {
-            if (countPBar){
+            if (countPBar) {
                 MeMan.setProgressCurrent(counter);
                 counter++;
             }
-            
+
             if (f.isDirectory()) {
                 Path[] tempFiles = (ReadFolder(f, false));
                 for (Path p : tempFiles) {
@@ -114,19 +124,19 @@ public class FileList {
         }
         return result;
     }
-    
-    private FileListEntry checkIfExisits(String title){
-        if (exsistingFiles == null){
+
+    private FileListEntry checkIfExisits(String title) {
+        if (exsistingFiles == null) {
             exsistingFiles = FileInOut.readFileList().getList();
         }
         boolean flag = false;
         int i;
-        for (i = 0; i < exsistingFiles.size(); i++){
+        for (i = 0; i < exsistingFiles.size(); i++) {
             flag = title.equals(exsistingFiles.get(i).getFilePath().toString());
-            if (flag){
+            if (flag) {
                 return exsistingFiles.get(i);
-            } 
-        }        
+            }
+        }
         return null;
     }
 }
