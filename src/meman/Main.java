@@ -232,6 +232,7 @@ public class Main extends javax.swing.JFrame {
     private void reSearchButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reSearchButtonMouseClicked
         new Thread() {
             public void run() {
+                disableUI();
                 movieSearchStatusLab.setText("Scanning");
                 FileList files = new FileList();
                 String directory = getImportDirectory();
@@ -241,6 +242,7 @@ public class Main extends javax.swing.JFrame {
                 movieSearchStatusLab.setText("Updating Index");
                 Search.updateIndex();
                 movieSearchStatusLab.setText("Done");
+                enableUI();
             }
         }.start();
 
@@ -377,8 +379,22 @@ public class Main extends javax.swing.JFrame {
         movieSearchStatusLab.setText(newText);
     }
 
-    public void setTotalSize(long newNum) {
+    public void setTotalSize(long newNum) { //set total size from long size in bytes
         totalSizeLab.setText(String.valueOf(newNum/1073741824)
                 + "GB");
+    }
+    
+    public void disableUI(){
+        reSearchButton.setEnabled(false);
+        searchTextBox.setEditable(false);
+        directoryToSearchTextBox.setEditable(false);
+        jButton1.setEnabled(false);
+    }
+    
+    public void enableUI(){
+        reSearchButton.setEnabled(true);     
+        directoryToSearchTextBox.setEditable(true);
+        searchTextBox.setEditable(true);
+        jButton1.setEnabled(true);
     }
 }

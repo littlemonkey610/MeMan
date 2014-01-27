@@ -48,9 +48,9 @@ public class FileList {
     private void BuildFileList(Path[] paths) {
         int movieCounter = 0;
         long size = 0;
-        
+
         System.out.println(paths.length);
-        
+
         for (Path p : paths) {
             FileListEntry tempFile = checkIfExisits(p.toString());
             if (tempFile != null) {

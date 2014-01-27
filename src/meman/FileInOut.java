@@ -76,11 +76,11 @@ public class FileInOut {
             while ((strRead = readbuffer.readLine()) != null) {
                 String[] splitArray = strRead.split("\t");
                 Date tempDate = new Date();
-                
+
                 try {
-                DateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
-                tempDate = (Date)formatter.parse(splitArray[2]);
-                } catch (ParseException e){
+                    DateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+                    tempDate = (Date) formatter.parse(splitArray[2]);
+                } catch (ParseException e) {
                 }
 
                 files.importSingle(Paths.get(splitArray[1]), tempDate);
