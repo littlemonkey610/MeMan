@@ -23,6 +23,8 @@ import java.text.ParseException;
  */
 public class FileInOut {
 
+    private static int numMovies;
+
     public static void WriteFileList(FileList f) {
         ArrayList<FileListEntry> mediaFiles = f.getList();
         int numMovies = f.getNumMovies();
@@ -75,6 +77,9 @@ public class FileInOut {
             String strRead;
             while ((strRead = readbuffer.readLine()) != null) {
                 String[] splitArray = strRead.split("\t");
+                if (Integer.parseInt(splitArray[3]) < 100) { //skips movies with no size
+                    continue;
+                }
                 Date tempDate = new Date();
 
                 try {
@@ -89,8 +94,17 @@ public class FileInOut {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        MeMan.setNumMovies(String.valueOf(counter));
+        numMovies = counter;
 
         return files;
+    }
+
+    public static Date getLastUpdated() {
+        File f = new File("movies.txt");
+        return new Date(f.lastModified());
+    }
+
+    public int getNumMovies() {
+        return numMovies;
     }
 }

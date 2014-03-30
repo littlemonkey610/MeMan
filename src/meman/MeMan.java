@@ -23,10 +23,6 @@ public class MeMan {
     public static void main(String[] args) {
         gui = new Main();
         gui.setVisible(true);
-        setMovieSearchStatus("Updating Index");
-        gui.disableUI();
-        Search.updateIndex();
-        gui.enableUI();
         setMovieSearchStatus("Done");
     }
 
@@ -42,15 +38,7 @@ public class MeMan {
         gui.setProgressCurrent(current);
     }
 
-    public static void setNumMovies(String newText) {
-        gui.setNumMovies(newText);
-    }
-
     public static void setMovieSearchStatus(String newText) {
         gui.setMovieSearchStatus(newText);
-    }
-
-    public static void setTotalSize(long newNumber) {
-        gui.setTotalSize(newNumber);
     }
 }

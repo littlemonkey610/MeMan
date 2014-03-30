@@ -18,11 +18,18 @@ import java.util.Date;
  */
 public class Main extends javax.swing.JFrame {
 
+    private ArrayList<FileListEntry> files;
+
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
+        Search.updateIndex();
+        files = Search.searchText("");
+        setTotalSize();
+        setNumMovies();
+        displaySearch("");
         searchingProgressBar.setMinimum(0);
         searchingProgressBar.setStringPainted(true);
     }
@@ -37,21 +44,24 @@ public class Main extends javax.swing.JFrame {
     private void initComponents() {
 
         searchTextBox = new javax.swing.JTextField();
-        directoryToSearchTextBox = new javax.swing.JTextField();
-        lab1 = new javax.swing.JLabel();
-        searchingProgressBar = new javax.swing.JProgressBar();
-        reSearchButton = new javax.swing.JButton();
         lab4 = new javax.swing.JLabel();
         numMoviesLab = new javax.swing.JLabel();
         lab3 = new javax.swing.JLabel();
         totalSizeLab = new javax.swing.JLabel();
         lab2 = new javax.swing.JLabel();
         numMoviesDisplayedLab = new javax.swing.JLabel();
-        lab5 = new javax.swing.JLabel();
-        movieSearchStatusLab = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        lab5 = new javax.swing.JLabel();
+        movieSearchStatusLab = new javax.swing.JLabel();
+        directoryToSearchTextBox = new javax.swing.JTextField();
+        reSearchButton = new javax.swing.JButton();
+        searchingProgressBar = new javax.swing.JProgressBar();
+        lab1 = new javax.swing.JLabel();
+        lab6 = new javax.swing.JLabel();
+        sinceLastImportButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -72,17 +82,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        directoryToSearchTextBox.setText("\\\\NAS\\media\\Movies");
-
-        lab1.setText("Directory to search");
-
-        reSearchButton.setText("Reload");
-        reSearchButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reSearchButtonMouseClicked(evt);
-            }
-        });
-
         lab4.setText("Total Number Of Movies:");
 
         numMoviesLab.setText("0");
@@ -95,10 +94,6 @@ public class Main extends javax.swing.JFrame {
 
         numMoviesDisplayedLab.setText("0");
 
-        lab5.setText("Status:");
-
-        movieSearchStatusLab.setText("Done");
-
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -109,7 +104,7 @@ public class Main extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
@@ -123,6 +118,7 @@ public class Main extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setToolTipText("");
         jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jTable1.setRowHeight(25);
         jTable1.setRowMargin(5);
@@ -140,39 +136,98 @@ public class Main extends javax.swing.JFrame {
 
         jButton1.setText("jButton1");
 
+        lab5.setText("Status:");
+
+        movieSearchStatusLab.setText("Done");
+
+        directoryToSearchTextBox.setText("\\\\NAS\\media\\Movies");
+
+        reSearchButton.setText("Reload");
+        reSearchButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                reSearchButtonMouseClicked(evt);
+            }
+        });
+
+        lab1.setText("Directory to search");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(lab1))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                    .addComponent(reSearchButton)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lab5)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(movieSearchStatusLab, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE))
+                .addComponent(searchingProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(directoryToSearchTextBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lab1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(directoryToSearchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(reSearchButton)
+                    .addComponent(lab5)
+                    .addComponent(movieSearchStatusLab))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchingProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        lab1.getAccessibleContext().setAccessibleName("");
+
+        lab6.setText("Search");
+
+        sinceLastImportButton.setText("Since Last Import");
+        sinceLastImportButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                sinceLastImportButtonMouseClicked(evt);
+            }
+        });
+        sinceLastImportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sinceLastImportButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(69, 69, 69)
-                                .addComponent(lab1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(reSearchButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lab5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(movieSearchStatusLab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(searchingProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(searchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(directoryToSearchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(0, 0, Short.MAX_VALUE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lab6)
+                        .addGap(101, 101, 101))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(sinceLastImportButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lab2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(numMoviesDisplayedLab, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,24 +245,7 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lab1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(directoryToSearchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(reSearchButton)
-                            .addComponent(lab5)
-                            .addComponent(movieSearchStatusLab))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchingProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lab4)
@@ -217,10 +255,19 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(numMoviesDisplayedLab)
                     .addComponent(totalSizeLab))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lab6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sinceLastImportButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         searchTextBox.getAccessibleContext().setAccessibleName("search_field");
-        lab1.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -243,6 +290,7 @@ public class Main extends javax.swing.JFrame {
                 Search.updateIndex();
                 movieSearchStatusLab.setText("Done");
                 enableUI();
+                displaySearch("");
             }
         }.start();
 
@@ -250,40 +298,47 @@ public class Main extends javax.swing.JFrame {
 
     private void searchTextBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchTextBoxMouseClicked
         searchTextBox.setText("");
+        displaySearch(searchTextBox.getText());
     }//GEN-LAST:event_searchTextBoxMouseClicked
 
     private void searchTextBoxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextBoxKeyReleased
-        files = Search.searchText(searchTextBox.getText());
-
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); //clear table for new results
-        if (model.getRowCount() > 0) {
-            for (int i = model.getRowCount() - 1; i > -1; i--) {
-                model.removeRow(i);
-            }
-        }
-
-        for (int i = 0; i < files.size(); i++) { //populate table with search results
-            model.addRow(new Object[]{files.get(i).getName(),
-                        files.get(i).getFileSize() + "MB",
-                        files.get(i).getExtension(),
-                        String.valueOf(timeString(files.get(i).getImportTime()))});
-        }
-        jTable1.setModel(model);
-
-        this.setNumMoviesDisplayed(String.valueOf(jTable1.getRowCount()));
-        
+        displaySearch(searchTextBox.getText());
     }//GEN-LAST:event_searchTextBoxKeyReleased
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() == 2 && !evt.isConsumed()) {
             evt.consume();
             try {
-                Desktop.getDesktop().open(new File(files.get(jTable1.getSelectedRow()).getFilePath().toString()));
+                Desktop.getDesktop().open(getSelectedFile());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void sinceLastImportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinceLastImportButtonActionPerformed
+    }//GEN-LAST:event_sinceLastImportButtonActionPerformed
+
+    private void sinceLastImportButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sinceLastImportButtonMouseClicked
+        ArrayList<FileListEntry> tempFiles = Search.searchText("");
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        clearResultsTable();
+        Date lastImport = FileInOut.getLastUpdated();
+
+        for (int i = 0; i < tempFiles.size(); i++) { //populate table with search results
+            long diff = lastImport.getTime() - tempFiles.get(i).getImportTime().getTime();
+            System.out.println(String.valueOf(diff / 86400000));
+            if (diff / 86400000 <= 0) {
+                model.addRow(new Object[]{tempFiles.get(i).getName(),
+                            tempFiles.get(i).getFileSize(),
+                            tempFiles.get(i).getExtension(),
+                            String.valueOf(timeString(tempFiles.get(i).getImportTime()))});
+            }
+        }
+        jTable1.setModel(model);
+
+        this.setNumMoviesDisplayed(String.valueOf(jTable1.getRowCount()));
+    }//GEN-LAST:event_sinceLastImportButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -322,6 +377,7 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField directoryToSearchTextBox;
     private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lab1;
@@ -329,15 +385,16 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel lab3;
     private javax.swing.JLabel lab4;
     private javax.swing.JLabel lab5;
+    private javax.swing.JLabel lab6;
     private javax.swing.JLabel movieSearchStatusLab;
     private javax.swing.JLabel numMoviesDisplayedLab;
     private javax.swing.JLabel numMoviesLab;
     private javax.swing.JButton reSearchButton;
     private javax.swing.JTextField searchTextBox;
     private javax.swing.JProgressBar searchingProgressBar;
+    private javax.swing.JButton sinceLastImportButton;
     private javax.swing.JLabel totalSizeLab;
     // End of variables declaration//GEN-END:variables
-    private ArrayList<FileListEntry> files;
 
     private String getImportDirectory() {
         String temp = directoryToSearchTextBox.getText();
@@ -346,13 +403,54 @@ public class Main extends javax.swing.JFrame {
         return temp;
     }
     
-    private String timeString(Date time){
+    private void displaySearch(String text){
+        ArrayList<FileListEntry> tempFiles = Search.searchText(text);
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        clearResultsTable();
+
+        for (int i = 0; i < tempFiles.size(); i++) { //populate table with search results
+            model.addRow(new Object[]{tempFiles.get(i).getName(),
+                        tempFiles.get(i).getFileSize(),
+                        tempFiles.get(i).getExtension(),
+                        String.valueOf(timeString(tempFiles.get(i).getImportTime()))});
+        }
+        jTable1.setModel(model);
+
+        this.setNumMoviesDisplayed(String.valueOf(jTable1.getRowCount()));
+    }
+
+    //clear table for new results
+    private void clearResultsTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        if (model.getRowCount() > 0) {
+            for (int i = model.getRowCount() - 1; i > -1; i--) {
+                model.removeRow(i);
+            }
+        }
+    }
+
+    private int timeString(Date time) {
         long current = new Date().getTime();
         long imported = time.getTime();
-        
+
         long diff = (current - imported) / 86400000;
-        
-        return String.valueOf(diff) + " Days Ago";
+
+        return (int) diff;
+    }
+    /*
+     * returns File that is selected in the jTable
+     * returns null if it could not find it
+     */
+
+    private File getSelectedFile() {
+        String title = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        for (int counter = 0; counter < files.size(); counter++) {
+            if (files.get(counter).getName().equals(title)) {
+                return new File(files.get(counter).getFilePath().toString());
+            }
+        }
+
+        return null;
     }
 
     public void setProgressMax(int max) {
@@ -371,28 +469,32 @@ public class Main extends javax.swing.JFrame {
         numMoviesDisplayedLab.setText(newText);
     }
 
-    public void setNumMovies(String newText) {
-        numMoviesLab.setText(newText);
+    public void setNumMovies() {
+        numMoviesLab.setText(String.valueOf(files.size()));
     }
 
     public void setMovieSearchStatus(String newText) {
         movieSearchStatusLab.setText(newText);
     }
 
-    public void setTotalSize(long newNum) { //set total size from long size in bytes
-        totalSizeLab.setText(String.valueOf(newNum/1073741824)
+    public void setTotalSize() { //set total size from long size in bytes
+        long totalSize = 0;
+        for(int c = 0; c < files.size(); c++){
+            totalSize += files.get(c).getFileSize();
+        }
+        totalSizeLab.setText(String.valueOf(totalSize/1024)
                 + "GB");
     }
-    
-    public void disableUI(){
+
+    public void disableUI() {
         reSearchButton.setEnabled(false);
         searchTextBox.setEditable(false);
         directoryToSearchTextBox.setEditable(false);
         jButton1.setEnabled(false);
     }
-    
-    public void enableUI(){
-        reSearchButton.setEnabled(true);     
+
+    public void enableUI() {
+        reSearchButton.setEnabled(true);
         directoryToSearchTextBox.setEditable(true);
         searchTextBox.setEditable(true);
         jButton1.setEnabled(true);
